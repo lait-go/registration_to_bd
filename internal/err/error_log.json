@@ -1,0 +1,298 @@
+[
+  {
+    "error": "не верный метод",
+    "time": "2025-04-18 10:29:32"
+  },
+  {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-17 16:50:07"
+  },
+  {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-17 16:48:17"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-17 16:46:35"
+  },
+  {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-17 16:46:35"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-17 16:44:32"
+  },
+  {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-17 16:44:32"
+  },
+  {
+    "error": "open ../db/migration/check_tables.sql: no such file or directory",
+    "time": "2025-04-17 16:43:26"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-17 16:15:59"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-17 15:25:08"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-17 15:25:08"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-17 15:25:08"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-16 17:28:43"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-16 17:28:43"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 17:28:43"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-16 17:27:01"
+  },
+  {
+    "error": "dial tcp 10.6.170.120:5432: connect: connection refused",
+    "time": "2025-04-16 17:27:01"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 17:27:01"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 17:13:34"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 17:11:18"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 17:09:05"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 17:07:58"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 17:05:43"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 17:03:30"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 17:02:40"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:22:19"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:22:03"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 15:21:20"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:19:05"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:17:33"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:16:58"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:15:48"
+  },
+  {
+    "error": "open migration/create_tables.sql: no such file or directory",
+    "time": "2025-04-16 15:14:06"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 15:14:06"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:11:51"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:10:02"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:08:05"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:06:29"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:05:50"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:04:18"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:03:20"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:02:48"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 15:02:21"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:36:21"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:35:44"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:35:23"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:34:15"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:33:10"
+  },
+  {
+    "error": "dial tcp 10.0.2.15:5432: connect: connection timed out",
+    "time": "2025-04-16 14:27:49"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 14:25:35"
+  },
+  {
+    "error": "dial tcp 127.0.0.1:5432: connect: connection refused",
+    "time": "2025-04-16 13:39:26"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:39:26"
+  },
+  {
+    "error": "dial tcp 127.0.0.1:5432: connect: connection refused",
+    "time": "2025-04-16 13:36:47"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:36:47"
+  },
+  {
+    "error": "sql: unknown driver \"postgres\" (forgotten import?)",
+    "time": "2025-04-16 13:35:14"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:35:14"
+  },
+  {
+    "error": "sql: unknown driver \"postgres\" (forgotten import?)",
+    "time": "2025-04-16 13:35:06"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:35:06"
+  },
+  {
+    "error": "sql: unknown driver \"postgres\" (forgotten import?)",
+    "time": "2025-04-16 13:32:06"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:32:06"
+  },
+  {
+    "error": "sql: unknown driver \"postgres\" (forgotten import?)",
+    "time": "2025-04-16 13:31:36"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:31:36"
+  },
+  {
+    "error": "sql: unknown driver \"postgres\" (forgotten import?)",
+    "time": "2025-04-16 13:30:42"
+  },
+  {
+    "error": "open ../storage/storage.sql: file is empty",
+    "time": "2025-04-16 13:30:42"
+  },
+  {
+    "error": "open ../storage/storage.sql: file_is_empty",
+    "time": "2025-04-16 12:19:38"
+  },
+  {
+    "error": "open ../confi/config.yaml: no such file or directory",
+    "time": "2025-04-13T14:39:52.300734772+03:00"
+  },
+  {
+    "error": "open ../confi/config.yaml: no such file or directory",
+    "time": "2025-04-13T14:40:56.352275493+03:00"
+  },
+  {
+    "error": "open ../onfig/config.yaml: no such file or directory",
+    "time": "2025-04-13T15:02:42.830090992+03:00"
+  },
+  {
+    "error": "open ../storage/storage.sql: no such file or directory",
+    "time": "2025-04-16 12:12:04"
+  },
+  {
+    "error": "file_is_empty",
+    "time": "2025-04-16 12:12:04"
+  },
+  {
+    "error": "open ../storage/storage.sql: no such file or directory",
+    "time": "2025-04-16 12:12:46"
+  },
+  {
+    "error": "open ../storage/storage.sql: file_is_empty",
+    "time": "2025-04-16 12:12:46"
+  },
+  {
+    "error": "open ../storage/storage.sql: no such file or directory",
+    "time": "2025-04-16 12:15:07"
+  },
+  {
+    "error": "open ../storage/storage.sql: file_is_empty",
+    "time": "2025-04-16 12:16:30"
+  }
+]
