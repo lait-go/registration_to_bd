@@ -30,13 +30,13 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	if id, err := strconv.Atoi(path); err == nil {
 		switch r.Method {
 		case http.MethodPut:
-			logger.Info(fmt.Sprintf("запрос на обновление пользователя %d получен", id))
+			logger.Info(fmt.Sprintf("PUT: запрос на обновление пользователя id=%d", id))
 			HandlerPUT(w, r, id)
 		case http.MethodDelete:
-			logger.Info(fmt.Sprintf("запрос на удаление пользователя %d получен", id))
+			logger.Info(fmt.Sprintf("DELETE: запрос на удаление пользователя id=%d", id))
 			HandlerDELETE(w, r, id)
 		case http.MethodGet:
-			logger.Info(fmt.Sprintf("запрос на получение пользователя %d получен", id))
+			logger.Info(fmt.Sprintf("GET: запрос на получение пользователя id=%d", id))
 			HandlerGETByID(w, r, id)
 		default:
 			http.Error(w, "Метод не поддерживается", http.StatusMethodNotAllowed)
@@ -46,10 +46,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodPost:
-		logger.Info("запрос на добавление данных получен")
+		logger.Info("POST: запрос на добавление данных")
 		HandlerPOST(w, r)
 	case http.MethodGet:
-		logger.Info("запрос на получение данных получен")
+		logger.Info("GET: запрос на получение списка данных")
 		HandlerGET(w, r, path)
 	default:
 		http.Error(w, "Метод не поддерживается", http.StatusMethodNotAllowed)
@@ -62,39 +62,45 @@ func HandlerPOST(w http.ResponseWriter, r *http.Request) {
 
 	var date Post
 	if err := json.NewDecoder(r.Body).Decode(&date); err != nil {
-		Error.GetErr(err)
 		http.Error(w, "Ошибка разбора тела запроса", http.StatusBadRequest)
-		logger.Debug("не удалось декодировать тело запроса")
+		logger.Debug("POST: не удалось декодировать тело запроса")
 		return
 	}
 
-	logger.Debug("начато обогащение данных")
+	logger.Debug("POST: начато обогащение данных")
 
 	date.Age = SafeGetAge(date.Name)
-	if date.Age == 0 {logger.Debug("ошибка при получении возраста"); return}
+	if date.Age == 0 {
+		logger.Debug("POST: ошибка при получении возраста")
+		return
+	}
 	date.Gender = SafeGetGender(date.Name)
-	if date.Gender == "" {logger.Debug("ошибка при получении пола"); return}
+	if date.Gender == "" {
+		logger.Debug("POST: ошибка при получении пола")
+		return
+	}
 	date.Nationality = SafeGetNationality(date.Name)
-	if date.Nationality == "" {logger.Debug("ошибка при получении национальности");return}
-
-	logger.Debug("обогащение завершено")
+	if date.Nationality == "" {
+		logger.Debug("POST: ошибка при получении национальности")
+		return
+	}
+	logger.Debug("POST: обогащение завершено")
 
 	validate := validator.New()
 	if err := validate.Struct(&date); err != nil {
-		Error.GetErr(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		logger.Debug("валидация данных не пройдена")
+		logger.Debug("POST: валидация данных не пройдена")
 		return
 	}
 
 	query := db.DbExecutor("../db/migrations/insert_to_tables.sql")
 	_, err := db.DB.Exec(query, date.Name, date.Surname, date.Patronymic, date.Age, date.Gender, date.Nationality)
 	if !Error.GetErr(err) {
+		logger.Info("POST: пользователь успешно добавлен")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{
 			"message": "Пользователь успешно принят",
 		})
-		logger.Info("данные успешно записаны в бд")
 	}
 }
 
@@ -105,15 +111,15 @@ func HandlerGETByID(w http.ResponseWriter, r *http.Request, id int) {
 	var date Post
 	err := db.DB.Get(&date, query, id)
 	if err != nil {
-		logger.Debug("ошибка при получении данных по id")
 		http.Error(w, "Пользователь не найден", http.StatusNotFound)
+		logger.Debug(fmt.Sprintf("GET: пользователь с id=%d не найден", id))
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(date)
-	logger.Info(fmt.Sprintf("данные пользователя %d успешно отправлены", id))
+	logger.Info(fmt.Sprintf("GET: данные пользователя id=%d успешно отправлены", id))
 }
 
 func HandlerGET(w http.ResponseWriter, r *http.Request, path string) {
@@ -132,19 +138,18 @@ func HandlerGET(w http.ResponseWriter, r *http.Request, path string) {
 	get = plag(path, get, "limit", false)
 	get = plag(path, get, "offset", false)
 
-	logger.Info(fmt.Sprintf("тело запроса: %s", get))
+	logger.Info(fmt.Sprintf("GET: SQL-запрос — %s", get))
 
 	var date []Post
 	err := db.DB.Select(&date, get)
 	if err != nil {
-		Error.GetErr(err)
 		http.Error(w, "Ошибка при получении данных", http.StatusInternalServerError)
-		logger.Debug("ошибка выполнения SELECT-запроса")
+		logger.Debug("GET: ошибка выполнения SELECT-запроса")
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(date)
-	logger.Info("данные успешно отправлены пользователю")
+	logger.Info("GET: данные успешно отправлены")
 }

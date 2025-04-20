@@ -1,5 +1,17 @@
 [
   {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-20 16:16:36"
+  },
+  {
+    "error": "Get \"https://api.agify.io/?name=Igor\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
+    "time": "2025-04-20 15:44:18"
+  },
+  {
+    "error": "pq: relation \"person\" does not exist",
+    "time": "2025-04-20 15:43:49"
+  },
+  {
     "error": "Get \"https://api.agify.io/?name=Ivan\": context deadline exceeded (Client.Timeout exceeded while awaiting headers)",
     "time": "2025-04-20 14:37:14"
   },
