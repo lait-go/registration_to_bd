@@ -14,9 +14,13 @@ import (
 func main() {
 	conf.Cfg = conf.Config_work()
 	logger := LogWork.LogInit()
+	
 	logger.Info("конфигурация считана")
 	logger.Info("логер запущен")
+	
 	db.DbExistCheck()
+	defer db.DB.Close()
+	
 	logger.Info("база данных проверена")
 
 	

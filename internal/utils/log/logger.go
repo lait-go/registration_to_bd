@@ -4,6 +4,7 @@ import (
 	conf "back/config"
 	Error "back/internal/err"
 	"back/internal/utils"
+	
 	"encoding/json"
 	"io"
 	"log/slog"
@@ -27,6 +28,19 @@ func (logStruct *LogStruct) Info(message string) {
 		Log: message,
 		Time: utils.TimeFormat(),
 		Level: "INFO",
+	}
+
+	ReadLog(pars)
+}
+
+func (logStruct *LogStruct) Fatal(message string){
+	logStruct.Logger.Error(message)
+	os.Exit(1)
+
+	pars := readLog{
+		Log: message,
+		Time: utils.TimeFormat(),
+		Level: "FATAL",
 	}
 
 	ReadLog(pars)
@@ -69,7 +83,7 @@ func (logStruct *LogStruct) Error(message string) {
 }
 
 func ReadLog(pars readLog) {
-	file, err := utils.FileEx(conf.Cfg.Path.LogPath)
+	file, err := utils.FileEx(conf.Cfg.LogPath)
 	if err != nil {
 		file, err = os.Create("../internal/utils/log/log_storage.json")
 		if err != nil {

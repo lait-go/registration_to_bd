@@ -26,9 +26,9 @@ func GetErr(err error) bool{
 		TimErr: utils.TimeFormat(),
 	}
 
-	file, err := utils.FileEx(conf.Cfg.Path.ErrorPath)
+	file, err := utils.FileEx(conf.Cfg.ErrorPath)
 	if err != nil {
-		file, err = os.Create(conf.Cfg.Path.ErrorPath)
+		file, err = os.Create(conf.Cfg.ErrorPath)
 		if err != nil {
 			log.Println("Ошибка открытия файла:", err)
 			return true

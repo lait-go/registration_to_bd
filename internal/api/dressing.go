@@ -2,6 +2,7 @@ package handler
 
 import (
 	Error "back/internal/err"
+	LogWork "back/internal/utils/log"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -18,9 +19,10 @@ type NationalityResponse struct {
 
 type AgeResponse struct {
 	Name  string `json:"name"`
-	Age   *int   `json:"age"`
+	Age   *int   `json:"age"`   // 👈 указатель — это правильно
 	Count int    `json:"count"`
 }
+
 type GenderResponse struct {
 	Count       int     `json:"count"`
   Name        string  `json:"name"`
@@ -28,81 +30,82 @@ type GenderResponse struct {
   Probability float64 `json:"probability"`
 }
 
+var sharedClient = &http.Client{Timeout: 3 * time.Second}
 
 
-func GetNationality(name string) string{
-	get := fmt.Sprintf("https://api.nationalize.io/?name=%s", name)
-
-	client := http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(get)
-	Error.GetErr(err)
-	
-	defer resp.Body.Close()
-
-	var dateRes NationalityResponse
-
-	err = json.NewDecoder(resp.Body).Decode(&dateRes)
-	Error.GetErr(err)
-
-	return country(dateRes)
-}
-
-func ApiGet(address string) (*http.Response, error) {
-	date, err := http.Get(address)
-	Error.GetErr(err)
-
-	return date, err
-}
-
-func country(nation NationalityResponse) string{
-	var max float64
-	var res string
-	
-	for _, val := range nation.Country{
-		if val.Probability > max {
-			max = val.Probability
-			res = val.CountryID
+func SafeGetAge(name string) (result int) {
+	defer func() {
+		if r := recover(); r != nil {
+			LogWork.LogInit().Debug(fmt.Sprintf("panic в SafeGetAge: %v", r))
+			result = 0
 		}
-	}
+	}()
 
-	return res
-}
-
-func GetAge(name string) int {
+	logger := LogWork.LogInit()
 	url := fmt.Sprintf("https://api.agify.io/?name=%s", name)
-
-	client := http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(url)
-	Error.GetErr(err)
-	
-	defer resp.Body.Close()
-
-	var age AgeResponse
-	
-	err = json.NewDecoder(resp.Body).Decode(&age)
-	Error.GetErr(err)
-
-	if age.Age == nil {
+	resp, err := sharedClient.Get(url)
+	if Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка запроса возраста: %v", err))
 		return 0
 	}
-
-	return *age.Age
-}
-
-
-func GetGender(name string) string{
-	get := fmt.Sprintf("https://api.genderize.io/?name=%s", name)
-
-	client := http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Get(get)
-	Error.GetErr(err)
-	
 	defer resp.Body.Close()
 
-	var gender GenderResponse
+	var ageResp AgeResponse
+	if err := json.NewDecoder(resp.Body).Decode(&ageResp); Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка разбора возраста: %v", err))
+		return 0
+	}
+	if ageResp.Age == nil {
+		logger.Debug("Поле Age отсутствует в ответе API")
+		return 0
+	}
+	return *ageResp.Age
+}
 
-	err = json.NewDecoder(resp.Body).Decode(&gender)
-  Error.GetErr(err)
+func SafeGetGender(name string) string {
+	logger := LogWork.LogInit()
+	url := fmt.Sprintf("http://api.genderize.io/?name=%s", name)
+	resp, err := sharedClient.Get(url)
+	if Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка запроса пола: %v", err))
+		return ""
+	}
+	defer resp.Body.Close()
 
-	return gender.Gender
+	var genderResp GenderResponse
+	if err := json.NewDecoder(resp.Body).Decode(&genderResp); Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка разбора пола: %v", err))
+		return ""
+	}
+	return genderResp.Gender
+}
+
+func SafeGetNationality(name string) string {
+	logger := LogWork.LogInit()
+	url := fmt.Sprintf("http://api.nationalize.io/?name=%s", name)
+	resp, err := sharedClient.Get(url)
+	if Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка запроса национальности: %v", err))
+		return ""
+	}
+	defer resp.Body.Close()
+
+	var natResp NationalityResponse
+	if err := json.NewDecoder(resp.Body).Decode(&natResp); Error.GetErr(err) {
+		logger.Debug(fmt.Sprintf("Ошибка разбора национальности: %v", err))
+		return ""
+	}
+	return extractBestCountry(natResp)
+}
+
+func extractBestCountry(n NationalityResponse) string {
+	var max float64
+	var result string
+	for _, c := range n.Country {
+		if c.Probability > max {
+			max = c.Probability
+			result = c.CountryID
+		}
+	}
+	return result
 }

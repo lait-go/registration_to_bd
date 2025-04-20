@@ -4,9 +4,7 @@ import (
 	"back/db"
 	Error "back/internal/err"
 	LogWork "back/internal/utils/log"
-	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -26,82 +24,102 @@ type Post struct {
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+	logger := LogWork.LogInit()
 	path := strings.Trim(r.URL.Path, "/")
 
 	if id, err := strconv.Atoi(path); err == nil {
-			HandleId(w, r, id)
-	} else if path == "" && r.Method == http.MethodPost{
+		switch r.Method {
+		case http.MethodPut:
+			logger.Info(fmt.Sprintf("запрос на обновление пользователя %d получен", id))
+			HandlerPUT(w, r, id)
+		case http.MethodDelete:
+			logger.Info(fmt.Sprintf("запрос на удаление пользователя %d получен", id))
+			HandlerDELETE(w, r, id)
+		case http.MethodGet:
+			logger.Info(fmt.Sprintf("запрос на получение пользователя %d получен", id))
+			HandlerGETByID(w, r, id)
+		default:
+			http.Error(w, "Метод не поддерживается", http.StatusMethodNotAllowed)
+		}
+		return
+	}
+
+	switch r.Method {
+	case http.MethodPost:
+		logger.Info("запрос на добавление данных получен")
 		HandlerPOST(w, r)
-	}else{
+	case http.MethodGet:
+		logger.Info("запрос на получение данных получен")
 		HandlerGET(w, r, path)
+	default:
+		http.Error(w, "Метод не поддерживается", http.StatusMethodNotAllowed)
 	}
 }
 
-func HandlerPOST(w http.ResponseWriter, r *http.Request){
+func HandlerPOST(w http.ResponseWriter, r *http.Request) {
 	logger := LogWork.LogInit()
-	logger.Info("Получен запрос(POST)")
-
 	w.Header().Set("Content-Type", "application/json")
 
 	var date Post
-
-	err := json.NewDecoder(r.Body).Decode(&date)
-	Error.GetErr(err)
-
-	logger.Debug("запрос Age")
-	date.Age = GetAge(date.Name)
-	logger.Debug("запрос Gender")
-	date.Gender = GetGender(date.Name)
-	logger.Debug("запрос Nationality")
-	date.Nationality = GetNationality(date.Name)
-
-	validate := validator.New()
-	if err = validate.Struct(&date); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&date); err != nil {
 		Error.GetErr(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Ошибка разбора тела запроса", http.StatusBadRequest)
+		logger.Debug("не удалось декодировать тело запроса")
 		return
 	}
-	
-	logger.Debug("данные успешно приняты")
 
-	dateStr := db.DbExecutor("../db/migrations/insert_to_tables.sql")
-	
-	_, err = db.DB.Exec(dateStr, date.Name, date.Surname, date.Patronymic, date.Age, date.Gender, date.Nationality)
-	if !Error.GetErr(err){
+	logger.Debug("начато обогащение данных")
+
+	date.Age = SafeGetAge(date.Name)
+	if date.Age == 0 {logger.Debug("ошибка при получении возраста"); return}
+	date.Gender = SafeGetGender(date.Name)
+	if date.Gender == "" {logger.Debug("ошибка при получении пола"); return}
+	date.Nationality = SafeGetNationality(date.Name)
+	if date.Nationality == "" {logger.Debug("ошибка при получении национальности");return}
+
+	logger.Debug("обогащение завершено")
+
+	validate := validator.New()
+	if err := validate.Struct(&date); err != nil {
+		Error.GetErr(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		logger.Debug("валидация данных не пройдена")
+		return
+	}
+
+	query := db.DbExecutor("../db/migrations/insert_to_tables.sql")
+	_, err := db.DB.Exec(query, date.Name, date.Surname, date.Patronymic, date.Age, date.Gender, date.Nationality)
+	if !Error.GetErr(err) {
 		w.WriteHeader(http.StatusOK)
-
 		json.NewEncoder(w).Encode(map[string]string{
 			"message": "Пользователь успешно принят",
 		})
-		
-		logger.Info("данные успешно записаны в бд, пользователь получил ответ")
+		logger.Info("данные успешно записаны в бд")
 	}
 }
 
-func HandleId(w http.ResponseWriter, r *http.Request, id int) {
+func HandlerGETByID(w http.ResponseWriter, r *http.Request, id int) {
+	logger := LogWork.LogInit()
+	query := db.DbExecutor("../db/migrations/receiving_by_id.sql")
+
 	var date Post
-
-	dateStr := db.DbExecutor("../db/migrations/receiving_by_id.sql")
-
-	err := db.DB.Get(&date, dateStr, id)
+	err := db.DB.Get(&date, query, id)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "Пользователь не найден", http.StatusNotFound)
-			return
-		}
-		Error.GetErr(err)
-		http.Error(w, "Ошибка при получении данных", http.StatusInternalServerError)
+		logger.Debug("ошибка при получении данных по id")
+		http.Error(w, "Пользователь не найден", http.StatusNotFound)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(date)
+	logger.Info(fmt.Sprintf("данные пользователя %d успешно отправлены", id))
 }
 
 func HandlerGET(w http.ResponseWriter, r *http.Request, path string) {
-	get := "SELECT * FROM person WHERE 1=1"
+	logger := LogWork.LogInit()
 
+	get := "SELECT * FROM person WHERE 1=1"
 	get = plag(path, get, "id", false)
 	get = plag(path, get, "name", true)
 	get = plag(path, get, "surname", true)
@@ -114,41 +132,19 @@ func HandlerGET(w http.ResponseWriter, r *http.Request, path string) {
 	get = plag(path, get, "limit", false)
 	get = plag(path, get, "offset", false)
 
+	logger.Info(fmt.Sprintf("тело запроса: %s", get))
+
 	var date []Post
 	err := db.DB.Select(&date, get)
 	if err != nil {
 		Error.GetErr(err)
 		http.Error(w, "Ошибка при получении данных", http.StatusInternalServerError)
+		logger.Debug("ошибка выполнения SELECT-запроса")
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(date)
+	logger.Info("данные успешно отправлены пользователю")
 }
-
-func plag(path, query, key string, isString bool) string {
-	if strings.Contains(path, key+"=") {
-		parts := strings.Split(path, key+"=")
-		if len(parts) >= 2 {
-			value := strings.SplitN(parts[1], "&", 2)[0]
-
-			switch key {
-			case "age_min":
-				query += fmt.Sprintf(" AND AGE >= %s", value)
-			case "age_max":
-				query += fmt.Sprintf(" AND AGE < %s", value)
-			case "limit", "offset":
-				query += fmt.Sprintf(" %s %s", strings.ToUpper(key), value)
-			default:
-				if isString {
-					query += fmt.Sprintf(" AND %s = '%s'", strings.ToUpper(key), value)
-				} else {
-					query += fmt.Sprintf(" AND %s = %s", strings.ToUpper(key), value)
-				}
-			}
-		}
-	}
-	return query
-}
-

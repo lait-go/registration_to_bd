@@ -7,20 +7,8 @@ import (
 	"io"
 	"log"
 
-	"github.com/jmoiron/sqlx"
-
 	_ "github.com/lib/pq" // PostgreSQL драйвер
 )
-
-func InitDbStruct() *sqlx.DB{
-	db, err := sqlx.Open("postgres", connStr)
-	Error.GetErr(err)
-
-	err = db.Ping()
-	Error.GetErr(err)
-
-	return db
-}
 
 func DbExecutor(path string) string {
 	file, err := utils.FileEx(path)
@@ -33,10 +21,6 @@ func DbExecutor(path string) string {
 }
 
 func DbExecutorNorParam(path string) sql.Result{
-	db := InitDbStruct()
-
-	defer db.Close()
-
 	file, err := utils.FileEx(path)
 	if err != nil {
 		Error.GetErr(err)
@@ -50,7 +34,7 @@ func DbExecutorNorParam(path string) sql.Result{
 	
 	sqlRes := string(sqlDate)
 
-	res, err := db.Exec(sqlRes)
+	res, err := DB.Exec(sqlRes)
 	Error.GetErr(err)
 
 	return res
