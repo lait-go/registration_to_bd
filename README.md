@@ -31,32 +31,37 @@ POST /
   "surname": "Ushakov",
   "patronymic": "Vasilevich"
 }
-
+```
 
 📤 Примеры запросов через curl
-➕ Добавить
+➕ Добавить 
+```
 curl -X POST http://localhost:8080 \
   -H "Content-Type: application/json" \
   -d '{"name": "Dmitriy", "surname": "Ushakov", "patronymic": "Vasilevich"}'
-
+```
 
 🔍 Получить всех (с фильтрацией и пагинацией)
+```
 curl "http://localhost:8080?name=Dmitriy&limit=5&offset=0"
-
+```
 
 🔍 Получить по ID
+```
 curl http://localhost:8080/3
-
+```
 
 ♻️ Обновить по ID
+```
 curl -X PUT http://localhost:8080/3 \
   -H "Content-Type: application/json" \
   -d '{"name": "Ivan", "surname": "Petrov", "patronymic": "Nikolaevich"}'
-
+```
 
 ❌ Удалить по ID
+```
 curl -X DELETE http://localhost:8080/3
-
+```
 
 🗂 Структура проекта
 .
@@ -73,19 +78,16 @@ curl -X DELETE http://localhost:8080/3
 ├── .env                    # Конфигурация проекта
 ├── README.md               # Документация проекта
 🗄 Пример .env файла
-env
-Копировать
-Редактировать
+```
 ENV=local
 HOST=:8080
 LOG_PATH=../internal/utils/log/log_storage.json
 ERROR_PATH=../internal/err/error_log.json
+```
+
 🗃 Структура БД (PostgreSQL)
 Таблица создаётся через SQL миграции:
-
-sql
-Копировать
-Редактировать
+```
 CREATE TABLE IF NOT EXISTS person (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
@@ -95,6 +97,7 @@ CREATE TABLE IF NOT EXISTS person (
     gender TEXT CHECK (gender IN ('male', 'female')),
     nationality TEXT
 );
+```
 Также должны быть миграции для:
 
 Вставки (insert_to_tables.sql)
