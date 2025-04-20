@@ -24,7 +24,7 @@ REST-сервис на Go, который принимает ФИО через A
 ## 📦 Пример JSON-запроса на добавление
 
 ```json
-POST /
+POST
 
 {
   "name": "Dmitriy",
@@ -81,6 +81,7 @@ curl -X DELETE http://localhost:8080/3
 ```
 ENV=local
 HOST=:8080
+DATE_CONF=postgres://name:password@hash:port/mydb?sslmode=disable
 LOG_PATH=../internal/utils/log/log_storage.json
 ERROR_PATH=../internal/err/error_log.json
 ```
