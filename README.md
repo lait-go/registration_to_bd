@@ -67,6 +67,7 @@ curl -X DELETE http://localhost:8080/3
 ```
 .
 ├── cmd/                    # Точка входа в приложение
+|   └── .env                # Конфигурация проекта
 ├── config/                 # Загрузка конфигурации из .env
 ├── db/                     # Подключение и миграции PostgreSQL
 ├── internal/
@@ -76,7 +77,6 @@ curl -X DELETE http://localhost:8080/3
 │       └── log/            # JSON-логгирование
 ├── migrations/             # SQL-файлы (CREATE, INSERT, UPDATE, DELETE)
 ├── swagger/                # Swagger-документация
-├── .env                    # Конфигурация проекта
 ├── README.md               # Документация проекта
 ```
 
