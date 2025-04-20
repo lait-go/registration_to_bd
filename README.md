@@ -77,6 +77,7 @@ curl -X DELETE http://localhost:8080/3
 ├── swagger/                # Swagger-документация
 ├── .env                    # Конфигурация проекта
 ├── README.md               # Документация проекта
+
 🗄 Пример .env файла
 ```
 ENV=local
