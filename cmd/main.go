@@ -4,7 +4,8 @@ import (
 	conf "back/config"
 	"back/db"
 	handler "back/internal/api"
-	"back/internal/utils/log"
+	LogWork "back/internal/utils/log"
+	"fmt"
 	"log"
 
 	"net/http"
@@ -20,19 +21,9 @@ func main() {
 
 	
 	http.HandleFunc("/", handler.Handler)
-	// http.HandleFunc("/", withCORS(handler.Handler))
-
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	path := r.URL.Path
-	// 	if path == "/" {
-	// 		http.ServeFile(w, r, "./../static/index.html")
-	// 		return
-	// 	}
-	// 	http.ServeFile(w, r, "./../static"+path)
-	// })
 	
-	log.Println("Сервер запущен на 10.6.170.11:8080")
-	err := http.ListenAndServe("10.6.170.11:8080", nil)
+	logger.Info(fmt.Sprintf("Сервер запущен на %s", conf.Cfg.Address))
+	err := http.ListenAndServe(conf.Cfg.Address, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
