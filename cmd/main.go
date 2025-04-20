@@ -6,6 +6,7 @@ import (
 	handler "back/internal/api"
 	"back/internal/utils/log"
 	"log"
+
 	"net/http"
 )
 
@@ -17,10 +18,9 @@ func main() {
 	db.DbExistCheck()
 	logger.Info("база данных проверена")
 
-
-
-
+	
 	http.HandleFunc("/", handler.Handler)
+	// http.HandleFunc("/", withCORS(handler.Handler))
 
 	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 	// 	path := r.URL.Path
@@ -31,8 +31,8 @@ func main() {
 	// 	http.ServeFile(w, r, "./../static"+path)
 	// })
 	
-	log.Println("Сервер запущен на http://localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	log.Println("Сервер запущен на 10.6.170.11:8080")
+	err := http.ListenAndServe("10.6.170.11:8080", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

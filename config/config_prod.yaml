@@ -1,0 +1,6 @@
+env: "prod"
+address: ":8080"
+path:
+  log_path: "../internal/utils/log/log_storage.json"
+  error_path: "../internal/err/error_log.json"
+  storage_path: "../db/storage.sql"

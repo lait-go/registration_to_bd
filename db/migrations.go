@@ -1,7 +1,6 @@
 package db
 
 import (
-	// conf "back/config"
 	Error "back/internal/err"
 	"back/internal/utils"
 	"database/sql"
@@ -13,10 +12,7 @@ import (
 	_ "github.com/lib/pq" // PostgreSQL драйвер
 )
 
-var connStr = "postgres://myser:123@10.6.170.120:5432/mydb?sslmode=disable"
-
-
-func initDbStruct() *sqlx.DB{
+func InitDbStruct() *sqlx.DB{
 	db, err := sqlx.Open("postgres", connStr)
 	Error.GetErr(err)
 
@@ -26,8 +22,19 @@ func initDbStruct() *sqlx.DB{
 	return db
 }
 
-func DbExecutor(path string) sql.Result{
-	db := initDbStruct()
+func DbExecutor(path string) string {
+	file, err := utils.FileEx(path)
+	Error.GetErr(err)
+
+	sqlDate, err := io.ReadAll(file)
+	Error.GetErr(err)
+
+	return string(sqlDate)
+}
+
+func DbExecutorNorParam(path string) sql.Result{
+	db := InitDbStruct()
+
 	defer db.Close()
 
 	file, err := utils.FileEx(path)

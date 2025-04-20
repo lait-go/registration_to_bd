@@ -1,9 +1,10 @@
 CREATE TABLE IF NOT EXISTS person (
   id serial primary key,
-  person_name varchar NOT NULL,
-  password varchar NOT NULL,
-  registration_date TIMESTAMP,
-  status varchar NOT NULL,
-  role varchar DEFAULT 'user' NOT NULL
+  name varchar NOT NULL,
+  surname varchar NOT NULL,
+  patronymic varchar,
+  age integer NOT NULL,
+  gender varchar NOT NULL,
+  nationality varchar NOT NULL
 );
 

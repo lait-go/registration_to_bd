@@ -1,24 +1,34 @@
 package db
 
 import (
-	conf "back/config"
+	// conf "back/config"
 	Error "back/internal/err"
-	"back/internal/utils"
+	// "back/internal/utils"
+
 	// "errors"
 	"log"
+
+	"github.com/jmoiron/sqlx"
 )
 
+var connStr = "postgres://myser:123@10.6.170.120:5432/mydb?sslmode=disable"
+var DB *sqlx.DB
+
 func DbExistCheck()  {
-	file, err := utils.FileEx(conf.Cfg.Path.StoragePath)
-	if err != nil {
-		Error.GetErr(err)
-		log.Fatal()
+	var err error
+	DB, err = sqlx.Open("postgres", connStr)
+	if Error.GetErr(err) {
+			log.Fatalf("Ошибка подключения к БД: %v", err)
+	}
+
+	if err = DB.Ping(); Error.GetErr(err) {
+			log.Fatalf("БД недоступна: %v", err)
+	}
+
+	log.Println("база данных проверена")
+
+	if DbExecutorNorParam("../db/migrations/check_tables.sql") == nil {
+		DbExecutorNorParam("../db/migrations/create_tables.sql")
 	}
 	
-	defer file.Close()
-
-	if DbExecutor("../db/migrations/check_tables.sql") == nil {
-		DbExecutor("../db/migrations/create_tables.sql")
-		DbExecutor("../db/migrations/add_constraints_to_tables.sql")
-	}
 }
