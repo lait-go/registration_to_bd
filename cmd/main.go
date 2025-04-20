@@ -22,8 +22,8 @@ func main() {
 	
 	http.HandleFunc("/", handler.Handler)
 	
-	logger.Info(fmt.Sprintf("Сервер запущен на %s", conf.Cfg.Address))
-	err := http.ListenAndServe(conf.Cfg.Address, nil)
+	logger.Info(fmt.Sprintf("Сервер запущен на %s", conf.Cfg.Host))
+	err := http.ListenAndServe(conf.Cfg.Host, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
